@@ -11,11 +11,11 @@ namespace ModelMare.Models
 
         [Required(ErrorMessage = "Titlul este obligatoriu")]
         [MaxLength(100, ErrorMessage = "Titlul trebuie sa contina maxim 100 caractere")]
-        public string Title { get; set; }
+        public string Denumire { get; set; }
 
         [Required(ErrorMessage = "Continutul este obligatoriu")]
         [MinLength(5, ErrorMessage = ">5")]
-        public string Content { get; set; }
+        public string Descriere { get; set; }
 
         [Required(ErrorMessage = "Data expirarii este obligatorie")]
         [DataType(DataType.DateTime)]
@@ -28,7 +28,7 @@ namespace ModelMare.Models
         public virtual Category? Category { get; set; }
 
         [NotMapped]
-        public IEnumerable<SelectListItem> Categories { get; set; }
+        public IEnumerable<SelectListItem>? Categories { get; set; }
 
     }
 }
