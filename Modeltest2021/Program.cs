@@ -1,13 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using Modeltest2021.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// conexiunea cu baza de date
+// extragem stringul de conexiune, stocat in appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// si realizam conexiunea
+builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(connectionString));
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
-
-// conexiunea cu baza de date
-// extragem stringul de conexiune, stocat in appsettings.json
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 
 
