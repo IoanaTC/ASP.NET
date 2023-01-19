@@ -101,6 +101,31 @@ namespace Modeltest2021.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult Search()
+        {
+            var cards = db.GiftCards.Include("Brand");
+            var search = "";
+            if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
+            {
+                search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); // eliminam spatiile libere 
+                List<int> cardIds = db.GiftCards.Where
+                                        (
+                                         at => at.Denumire.Contains(search)
+                                         || at.Descriere.Contains(search)
+                                        ).Select(a => a.Id).ToList();
+
+                cards = db.GiftCards.Include("Brand")
+                          .Where(c => cardIds.Contains(c.Id)
+                                      && c.DataExp.Value.Day <= DateTime.Now.Day + 5 && c.DataExp.Value.Month == DateTime.Now.Month && c.DataExp.Value.Year == DateTime.Now.Year
+                                      && c.Procent <= 30)
+                          .OrderByDescending(c => c.DataExp);
+            }
+            ViewBag.SearchString = search;
+            ViewBag.Cards = cards;
+            return View();
+        }
+
         [NonAction]
         public IEnumerable<SelectListItem> GetAllBrands()
         {
