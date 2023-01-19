@@ -22,7 +22,7 @@
 
     @Html.Label("DataExp", "Data expirarii")
     <br />
-    <input name="DataExp" class="form-control" type="date" value="" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+    <input name="DataExp" class="form-control" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
     <br />
     @Html.ValidationMessageFor(m => m.DataExp, null, new { @class = "text-danger" })
     <br />

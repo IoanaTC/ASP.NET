@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Modeltest2021.Models;
 using NuGet.Versioning;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Modeltest2021.Controllers
 {
@@ -29,6 +31,10 @@ namespace Modeltest2021.Controllers
         public IActionResult Show(int? id)
         {
             var card = db.GiftCards.Include("Brand").Where(c => c.Id == (int)id).First();
+
+            if (TempData.ContainsKey("message"))
+                ViewBag.message = TempData["message"];
+
             return View(card);
         }
         
@@ -55,6 +61,36 @@ namespace Modeltest2021.Controllers
             }
         }
 
+        public IActionResult Edit(int? id)
+        {
+            var card = db.GiftCards.Include("Brand").Where(c => c.Id == (int)id).First();
+            
+            card.Brands = GetAllBrands();
+            return View(card);
+        }
+        [HttpPost]
+        public IActionResult Edit(int? id, GiftCard requestCard)
+        {
+            var card = db.GiftCards.Include("Brand").Where(c => c.Id == (int)id).First();
+            if (ModelState.IsValid)
+            {
+                card.Denumire = requestCard.Denumire;
+                card.Descriere = requestCard.Descriere;
+                card.DataExp = requestCard.DataExp;
+                card.Procent = requestCard.Procent;
+
+                db.SaveChanges();
+                TempData["message"] = "Cardul a fost modificat";
+                return Redirect("/GiftCards/Show/" + (int) id);
+            }
+            else
+            {
+                requestCard.Brands = GetAllBrands();
+                requestCard.DataExp = card.DataExp;
+
+                return View(requestCard);
+            }
+        }
         [NonAction]
         public IEnumerable<SelectListItem> GetAllBrands()
         {

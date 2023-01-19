@@ -17,6 +17,7 @@ namespace Modeltest2021.Models
 
         [Required(ErrorMessage = " Data expirarii este obligatorie")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? DataExp { get; set; }
 
         [Required(ErrorMessage = "Procentul este obligatoriu")]
