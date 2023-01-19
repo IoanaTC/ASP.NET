@@ -36,7 +36,7 @@ namespace Modeltest2021.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brands", (string)null);
                 });
 
             modelBuilder.Entity("Modeltest2021.Models.GiftCard", b =>
@@ -69,7 +69,7 @@ namespace Modeltest2021.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.ToTable("GiftCards");
+                    b.ToTable("GiftCards", (string)null);
                 });
 
             modelBuilder.Entity("Modeltest2021.Models.GiftCard", b =>

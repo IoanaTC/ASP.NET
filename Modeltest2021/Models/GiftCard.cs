@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Modeltest2021.Models
 {
@@ -15,8 +17,7 @@ namespace Modeltest2021.Models
 
         [Required(ErrorMessage = " Data expirarii este obligatorie")]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime DataExp { get; set; }
+        public DateTime? DataExp { get; set; }
 
         [Required(ErrorMessage = "Procentul este obligatoriu")]
         [Range(1, 100, ErrorMessage = "Procentul trebuie sa fie cuprins intre 1 si 100")]
@@ -26,5 +27,8 @@ namespace Modeltest2021.Models
         public int? BrandId { get; set; }
 
         public virtual Brand? Brand { get; set; }
+
+        [NotMapped]
+        public IEnumerable<SelectListItem>? Brands { get; set; }
     }
 }
