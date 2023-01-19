@@ -51,7 +51,7 @@ namespace Modeltest2021.Controllers
             {
                 db.GiftCards.Add(requestCard);
                 db.SaveChanges();
-                TempData["message"] = "GiftCardul a fost adaugat";
+                TempData["message"] = "Cardul a fost adaugat";
                 return RedirectToAction("Index");
             }
             else
@@ -90,6 +90,16 @@ namespace Modeltest2021.Controllers
 
                 return View(requestCard);
             }
+        }
+        public IActionResult Delete(int? id)
+        {
+            var card = db.GiftCards.Include("Brand").Where(c => c.Id == (int)id).First();
+            db.GiftCards.Remove(card);
+            db.SaveChanges();
+
+            TempData["message"] = "Cardul a fost sters";
+
+            return RedirectToAction("Index");
         }
         [NonAction]
         public IEnumerable<SelectListItem> GetAllBrands()
