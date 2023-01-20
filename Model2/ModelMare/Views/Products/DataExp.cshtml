@@ -1,0 +1,7 @@
+﻿<h2>Date de expirare</h2>
+
+@foreach(var date in ViewBag.dates){
+    <a href="/Products/Index/?date=@date">@date</a>
+    <br />
+    <br />
+}

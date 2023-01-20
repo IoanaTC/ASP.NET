@@ -17,7 +17,14 @@ namespace ModelMare.Controllers
 
         public IActionResult Index()
         {
+            var date = Convert.ToString(HttpContext.Request.Query["date"]);
             var products = db.Products.Include("Category");
+
+            if (date != null)
+            {
+                products = db.Products.Include("Category")
+                             .Where(p => p.DateExp.ToString() == date);
+            }
             // afisare paginata
             int _perPage = 3;
 
@@ -156,7 +163,13 @@ namespace ModelMare.Controllers
            
             return View();
         }
+        public IActionResult DataExp()
+        {
+            var dates = db.Products.Select(p => p.DateExp.ToString()).Distinct();
 
+            ViewBag.dates = dates;
+            return View();
+        }
         [NonAction]
         public IEnumerable<SelectListItem> GetAllCategories()
         {
