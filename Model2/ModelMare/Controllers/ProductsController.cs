@@ -42,7 +42,7 @@ namespace ModelMare.Controllers
         }
         public IActionResult Show(int? id)
         {
-            var product = db.Products.Include("Categories").Where(x => x.Id == id).First();
+            var product = db.Products.Include("Category").Where(x => x.Id == id).First();
 
             if (TempData.ContainsKey("message"))
                 ViewBag.message = TempData["message"];
@@ -75,7 +75,8 @@ namespace ModelMare.Controllers
         }
         public IActionResult Edit(int? id)
         {
-            var product = db.Products.Include("Categories").Where(x => x.Id == id).First();
+            var product = db.Products.Find((int)id);
+
             product.Categories = GetAllCategories();
 
             return View(product);
@@ -83,7 +84,7 @@ namespace ModelMare.Controllers
         [HttpPost]
         public IActionResult Edit(int? id, Product requestProduct)
         {
-            var product = db.Products.Include("Categories").Where(x => x.Id == id).First();
+            var product = db.Products.Include("Category").Where(x => x.Id == id).First();
             if (ModelState.IsValid)
             {
                 product.Denumire = requestProduct.Denumire;

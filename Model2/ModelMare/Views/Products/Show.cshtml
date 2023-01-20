@@ -1,5 +1,14 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model ModelMare.Models.Product
+
+<br />
+@if (ViewBag.Message != null)
+{
+    <h2 class="alert-success p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
 }
+
+<h1> Afisare produs </h1>
+
+@Html.Partial("ProductInfo", Model)
+
+<a class="btn btn-success" href="/Products/Edit/@Model.Id">Editare product</a>
+<a class="btn btn-danger" href="/Products/Delete/@Model.Id">Stergere product</a>
