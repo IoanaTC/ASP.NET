@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ModelMare.Models;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace ModelMare.Controllers
 {
@@ -110,6 +111,52 @@ namespace ModelMare.Controllers
             TempData["message"] = "Produsul a fost sters";
             return Redirect("/Products/Index");
         }
+
+        public IActionResult Search()
+        {
+            // produsele care nu au expirat
+            var products = db.Products.Include("Category")
+                             .Where(p => p.DateExp.Value.Year >= DateTime.Now.Year
+                                    && p.DateExp.Value.Month >= DateTime.Now.Month
+                                    && p.DateExp.Value.Day >= DateTime.Now.Day);
+
+            var search = "";
+            if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
+            {
+                search = Convert.ToString(HttpContext.Request.Query["search"]).Trim();
+                List<int> productsIds = db.Products.Include("Category")
+                                        .Where(p => (p.DateExp.Value.Year >= DateTime.Now.Year
+                                                && p.DateExp.Value.Month >= DateTime.Now.Month
+                                                && p.DateExp.Value.Day >= DateTime.Now.Day)
+                                                && (p.Denumire.Contains(search)
+                                                || p.Descriere.Contains(search)))
+                                        .Select(p => p.Id).ToList();
+
+                products = db.Products.Include("Category")
+                             .Where(p => productsIds.Contains(p.Id))
+                             .OrderByDescending(products => products.DateExp);
+            }
+            ViewBag.SearchString = search;
+
+            int _perPage = 3;
+            int totalItems = products.Count();
+            var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
+
+            var offset = 0;
+            if (!currentPage.Equals(0))
+            {
+                offset = (currentPage - 1) * _perPage;
+            }
+            var paginatedProducts = products.Skip(offset).Take(_perPage);
+
+            ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)_perPage);
+            ViewBag.products = paginatedProducts;
+
+            ViewBag.PaginationBaseUrl = "/Products/Search/?search=" + search + "&page";
+           
+            return View();
+        }
+
         [NonAction]
         public IEnumerable<SelectListItem> GetAllCategories()
         {
