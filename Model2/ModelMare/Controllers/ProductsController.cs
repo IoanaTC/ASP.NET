@@ -40,7 +40,15 @@ namespace ModelMare.Controllers
 
             return View();
         }
+        public IActionResult Show(int? id)
+        {
+            var product = db.Products.Include("Categories").Where(x => x.Id == id).First();
 
+            if (TempData.ContainsKey("message"))
+                ViewBag.message = TempData["message"];
+
+            return View(product);
+        }
         public IActionResult New()
         {
             Product product = new Product();
@@ -65,7 +73,42 @@ namespace ModelMare.Controllers
                 return View(requestProduct);
             }
         }
+        public IActionResult Edit(int? id)
+        {
+            var product = db.Products.Include("Categories").Where(x => x.Id == id).First();
+            product.Categories = GetAllCategories();
 
+            return View(product);
+        }
+        [HttpPost]
+        public IActionResult Edit(int? id, Product requestProduct)
+        {
+            var product = db.Products.Include("Categories").Where(x => x.Id == id).First();
+            if (ModelState.IsValid)
+            {
+                product.Denumire = requestProduct.Denumire;
+                product.Descriere = requestProduct.Descriere;
+                product.DateExp = requestProduct.DateExp;
+
+                db.SaveChanges();
+                TempData["message"] = "Produsul a fost modificat";
+                return Redirect("/Products/Show/" + (int)id);
+            }
+            else
+            {
+                requestProduct.Categories = GetAllCategories();
+                return View(requestProduct);
+            }
+        }
+        public IActionResult Delete(int? id)
+        {
+            var product = db.Products.Where(x => x.Id == id).First();
+            db.Products.Remove(product);
+
+            db.SaveChanges();
+            TempData["message"] = "Produsul a fost sters";
+            return Redirect("/Products/Index");
+        }
         [NonAction]
         public IEnumerable<SelectListItem> GetAllCategories()
         {
